@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    // Environment setup
+    "lib": ["ESNext"],
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "allowJs": true,
+
+    // Module resolution
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true, // "import type { User } from './types';" vs "import { User } from './types';"
+    "allowSyntheticDefaultImports": true,
+
+    // Best practices
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+
+    // Monorepo settings
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo",
+
+    // Path mapping
+    "baseUrl": ".",
+    "paths": {
+      "@app/ui/*": ["./apps/ui/src/*"],
+      "@app/api/*": ["./apps/api/src/*"],
+      "@app/bgw/*": ["./apps/bgw/src/*"],
+      "@app/dbo/*": ["./modules/dbo/src/*"],
+      "@app/shared/*": ["./modules/shared/src/*"]
+    }
+  }
+}

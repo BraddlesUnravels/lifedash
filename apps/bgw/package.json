@@ -1,0 +1,14 @@
+{
+  "name": "@app/bgw",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Background worker for Life Dash",
+  "author": "Bradley Laskey",
+  "engines": {
+    "bun": ">=1.2.21"
+  },
+  "dependencies": {
+    "@app/shared": "workspace:*",
+    "@app/dbo": "workspace:*"
+  }
+}

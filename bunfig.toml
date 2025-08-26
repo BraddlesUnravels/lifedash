@@ -1,0 +1,7 @@
+[test]
+globals = true
+[alias]
+"@app/ui" = "apps/ui/src"
+"@app/api" = "apps/api/src"
+"@app/dbo" = "modules/dbo/src"
+"@app/assets" = "modules/shared"

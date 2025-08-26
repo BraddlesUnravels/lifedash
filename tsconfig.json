@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/ui" },
+    { "path": "./apps/api" },
+    { "path": "./apps/bgw" },
+    { "path": "./modules/dbo" },
+    { "path": "./modules/shared" }
+  ]
+}

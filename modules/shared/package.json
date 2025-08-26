@@ -1,0 +1,7 @@
+{
+  "name": "@app/shared",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared assets/resources for Life Dash",
+  "author": "Bradley Laskey"
+}

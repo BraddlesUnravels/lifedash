@@ -1,0 +1,10 @@
+#########################
+### Folders to ignore ###
+#########################
+# Root & Common
+**/node_modules
+**/.vscode
+**/.husky
+**/.git
+**/.github
+**/__test__

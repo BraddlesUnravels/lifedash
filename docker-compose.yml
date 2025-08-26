@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:11-jammy
+    ports:
+      - '3306:3306'
+    environment:
+      - MARIADB_ROOT_PASSWORD=rootpassword
+      - MARIADB_DATABASE=appdb
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - ./docker/dbo:/docker-entrypoint-initdb.d:ro
+volumes:
+  mariadb-data:

@@ -1,0 +1,501 @@
+// Life-dash Financial Dashboard Database Schema
+// Personal finance tracking with goals, budgets, and multi-institution support
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "mysql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum AccountType {
+  SAVINGS
+  CHECKING
+  CREDIT_CARD
+  DEBIT_CARD
+}
+
+enum AccountStatus {
+  ACTIVE
+  CLOSED
+  SUSPENDED
+}
+
+enum CardType {
+  VISA
+  MASTERCARD
+  AMEX
+}
+
+enum TransactionType {
+  PURCHASE
+  TRANSFER
+  PAYMENT
+  FEE
+  INTEREST
+  REVERSAL
+}
+
+enum GoalType {
+  SAVINGS
+  DEBT_PAYOFF
+  PURCHASE
+  EMERGENCY_FUND
+}
+
+enum GoalStatus {
+  ACTIVE
+  ACHIEVED
+  PAUSED
+  CANCELLED
+}
+
+enum BudgetPeriod {
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum BudgetStatus {
+  ACTIVE
+  COMPLETED
+}
+
+enum RecurringFrequency {
+  WEEKLY
+  FORTNIGHTLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+// ============================================================================
+// CORE USER & AUTHENTICATION
+// ============================================================================
+
+model User {
+  id                  String      @id @default(uuid())
+  firstName           String      @map("first_name")      @db.VarChar(100)
+  middleName          String?     @map("middle_name")     @db.VarChar(100)
+  lastName            String?     @map("last_name")       @db.VarChar(100)
+  timezone            String      @db.VarChar(50)         @default("Australia/Sydney") 
+  currencyCode        String      @map("currency_code")   @default("AUD")               @db.VarChar(3)
+  isActive            Boolean     @map("is_active")       @default(true)  
+  createdAt           DateTime    @map("created_at")      @default(now())
+  updatedAt           DateTime    @map("updated_at")      @updatedAt
+
+  // Relations
+  emails                          UserEmail[]
+  phones                          UserPhone[]
+  addresses                       UserAddress[]
+  auth                            UserCredential?
+  security                        UserSecurity?
+  sessions                        UserSession[]
+  accounts                        Account[]
+  categories                      Category[]
+  goals                           Goal[]
+  budgets                         Budget[]
+  recurringTransactions           RecurringTransaction[]
+  categoryRules                   CategoryRule[]
+
+  @@map("users")
+}
+
+model UserSecurity {
+  id                        String      @id                             @default(uuid())
+  userId                    String      @map("user_id")                 @unique  
+  twoFactorEnabled          Boolean     @map("two_factor_enabled")      @default(false)
+  twoFactorSecret           String?     @map("two_factor_secret")
+  lastSuccessfulLogin       DateTime?   @map("last_successful_login")
+  lastFailedLogin           DateTime?   @map("last_failed_login")
+  failedLoginAttempts       Int         @map("failed_login_attempts")   @default(0)
+  isLockedOut               Boolean     @map("is_locked_out")           @default(false)
+  lockoutUntil              DateTime?   @map("lockout_until")
+  createdAt                 DateTime    @map("created_at")              @default(now())  
+  updatedAt                 DateTime    @map("updated_at")              @updatedAt 
+
+  user                      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_security")
+}
+
+model UserCredential {
+  id                        String      @id                             @default(uuid())
+  userId                    String      @map("user_id")                 @unique 
+  passwordHash              String      @map("password_hash")
+  passwordSalt              String      @map("password_salt")
+  passwordResetToken        String?     @map("password_reset_token")
+  passwordResetExpiry       DateTime?   @map("password_reset_expiry")
+  passwordChangedAt         DateTime    @map("password_changed_at")  
+  createdAt                 DateTime    @map("created_at")              @default(now()) 
+  updatedAt                 DateTime    @map("updated_at")              @updatedAt
+
+  user                      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_credentials")
+}
+
+model UserEmail {
+  id                        String      @id                                   @default(uuid())
+  userId                    String      @map("user_id")
+  email                     String      @db.VarChar(255)
+  isPrimary                 Boolean     @map("is_primary")                    @default(false)
+  isVerified                Boolean     @map("is_verified")                   @default(false)
+  verificationToken         String?     @map("verification_token")
+  verificationTokenExpiry   DateTime?   @map("verification_token_expiry")
+  verifiedAt                DateTime?   @map("verified_at")
+  createdAt                 DateTime    @map("created_at")                    @default(now())
+
+  user                      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, email])
+  @@index([email])
+  @@index([userId, isPrimary])
+  @@map("user_emails")
+}
+
+model UserPhone {
+  id                        String      @id                                   @default(uuid())
+  userId                    String      @map("user_id")
+  phoneNumber               String      @map("phone_number")                  @db.VarChar(20)
+  isPrimary                 Boolean     @map("is_primary")                    @default(false)
+  isVerified                Boolean     @map("is_verified")                   @default(false)
+  verificationToken         String?     @map("verification_token")
+  verificationTokenExpiry   DateTime?   @map("verification_token_expiry")
+  verifiedAt                DateTime?   @map("verified_at")
+  createdAt                 DateTime    @map("created_at")                    @default(now())
+
+  user                      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, phoneNumber])
+  @@index([phoneNumber])
+  @@index([userId, isPrimary])
+  @@map("user_phones")
+}
+
+model UserAddress {
+  id                        String      @id                       @default(uuid())
+  userId                    String      @map("user_id")
+  addressLine1              String      @map("address_line_1")    @db.VarChar(255)
+  addressLine2              String?     @map("address_line_2")    @db.VarChar(255)
+  city                      String      @db.VarChar(100)
+  state                     String      @db.VarChar(100)
+  postalCode                String      @map("postal_code")       @db.VarChar(20)
+  country                   String      @db.VarChar(100)
+  isPrimary                 Boolean     @map("is_primary")        @default(false)
+  createdAt                 DateTime    @map("created_at")        @default(now())
+
+  user                      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, isPrimary])
+  @@map("user_addresses")
+}
+
+model UserSession {
+  id                        String      @id                       @default(uuid())
+  userId                    String      @map("user_id")
+  tokenHash                 String      @map("token_hash")
+  expiresAt                 DateTime    @map("expires_at")
+  createdAt                 DateTime    @map("created_at")        @default(now()) 
+
+  user                      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+// ============================================================================
+// FINANCIAL INSTITUTIONS & PRODUCTS
+// ============================================================================
+
+model Institution {
+  id                        String              @id                               @default(uuid())
+  name                      String              @db.VarChar(100)
+  code                      String?             @db.VarChar(10)
+  logoUrl                   String?             @map("logo_url")                  @db.Text
+  websiteUrl                String?             @map("website_url")               @db.Text
+  abn                       String?             @db.VarChar(20)
+  auspaynetId               String?             @map("auspaynet_id")              @db.VarChar(10)
+  customerServiceEmail      String?             @map("customer_service_email")    @db.VarChar(255)
+  customerServiceNumber     String?             @map("customer_service_number")   @db.VarChar(20)
+
+  // Relations
+  accounts                  AccountProduct[]
+  userAccounts              Account[]
+
+  @@map("institutions")
+}
+
+model AccountProduct {
+  id                        String          @id                       @default(uuid())
+  institutionId             String          @map("institution_id")
+  name                      String          @db.VarChar(100)
+  type                      AccountType
+  features                  Json?
+
+  institution               Institution     @relation(fields: [institutionId], references: [id])
+  accounts                  Account[]
+
+  @@map("account_products")
+}
+
+// ============================================================================
+// ACCOUNTS & CARDS
+// ============================================================================
+
+model Account {
+  id                        String          @id                           @default(uuid())
+  userId                    String          @map("user_id")
+  institutionId             String          @map("institution_id")
+  accountNumber             String          @map("account_number")        @db.VarChar(50) // masked for security
+  productId                 String          @map("product_id")
+  alias                     String?         @db.VarChar(100)
+  accountHolderName         String?         @map("account_holder_name")   @db.VarChar(200)
+  status                    AccountStatus   @default(ACTIVE)
+  openedDate                DateTime?       @map("opened_date")           @db.Date
+  createdAt                 DateTime        @map("created_at")            @default(now())  
+
+  user                      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  institution               Institution     @relation(fields: [institutionId], references: [id])
+  product                   AccountProduct  @relation(fields: [productId], references: [id])
+
+  // Relations
+  bankAccount               BankAccount?
+  creditCard                CreditCard?
+  transactions              Transaction[]
+
+  @@map("accounts")
+}
+
+model BankAccount {
+  id                        String          @id                               @default(uuid())
+  accountId                 String          @map("account_id")                @unique
+  bsbNumber                 String?         @map("bsb_number")                @db.VarChar(6)
+  dailyTransferLimit        Decimal?        @map("daily_transfer_limit")      @db.Decimal(19, 5)
+  currentBalance            Decimal?        @map("current_balance")           @db.Decimal(19, 5)
+  availableBalance          Decimal?        @map("available_balance")         @db.Decimal(19, 5)
+
+  account                   Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  debitCards                DebitCard[]
+
+  @@map("bank_accounts")
+}
+
+model CreditCard {
+  id                        String                  @id                           @default(uuid())
+  accountId                 String                  @map("account_id")            @unique 
+  cardNumberMasked          String                  @map("card_number_masked")    @db.VarChar(19)
+  cardType                  CardType                @map("card_type")
+  expiryMonth               Int                     @map("expiry_month")
+  expiryYear                Int                     @map("expiry_year")
+  creditLimit               Decimal                 @map("credit_limit")          @db.Decimal(19, 5)
+  currentBalance            Decimal                 @map("current_balance")       @db.Decimal(19, 5) // negative = debt
+  cashAdvanceRate           Decimal                 @map("cash_advance_rate")     @db.Decimal(5, 4)
+  purchaseRate              Decimal                 @map("purchase_rate")         @db.Decimal(5, 4)
+  promotionalRate           Decimal?                @map("promotional_rate")      @db.Decimal(5, 4)
+
+  account                   Account                 @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  statements                CreditCardStatement[]
+  offers                    CreditCardOffer[]
+
+  @@map("credit_cards")
+}
+
+model DebitCard {
+  id                        String                  @id                           @default(uuid())
+  bankAccountId             String                  @map("bank_account_id")
+  cardNumberMasked          String                  @map("card_number_masked")    @db.VarChar(19)
+  cardType                  CardType                @map("card_type")
+  expiryMonth               Int                     @map("expiry_month")
+  expiryYear                Int                     @map("expiry_year")
+  status                    AccountStatus           @default(ACTIVE)
+
+  bankAccount               BankAccount             @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+
+  @@map("debit_cards")
+}
+
+// ============================================================================
+// TRANSACTIONS & FINANCIAL DATA
+// ============================================================================
+
+model Transaction {
+  id                        String                  @id                           @default(uuid())
+  accountId                 String                  @map("account_id")
+  date                      DateTime                @db.Date
+  amount                    Decimal                 @db.Decimal(19, 5)            // positive = credit, negative = debit
+  balanceAfter              Decimal?                @map("balance_after")         @db.Decimal(19, 5)
+  description               String?                 @db.Text
+  merchantName              String?                 @map("merchant_name")         @db.VarChar(200)
+  categoryId                String?                 @map("category_id")
+  transactionType           TransactionType         @map("transaction_type")
+  cardUsedId                String?                 @map("card_used_id")          // references DebitCard or CreditCard
+  referenceNumber           String?                 @map("reference_number")      @db.VarChar(100)
+  importedFrom              String?                 @map("imported_from")         @db.VarChar(50)
+  isRecurring               Boolean                 @map("is_recurring")          @default(false)
+  createdAt                 DateTime                @default(now())               @map("created_at")
+
+  account                   Account                 @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  category                  Category?               @relation(fields: [categoryId], references: [id])
+
+  // Relations
+  creditCardOffers          CreditCardOffer[]
+
+  @@map("transactions")
+}
+
+model Category {
+  id                         String                 @id                           @default(uuid())
+  userId                     String                 @map("user_id")
+  name                       String                 @db.VarChar(100)
+  parentCategoryId           String?                @map("parent_category_id")
+  color                      String?                @db.VarChar(7)                // hex color
+  icon                       String?                @db.VarChar(50)
+  isSystemDefault            Boolean                @map("is_system_default")     @default(false)
+
+  user                      User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentCategory            Category?               @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id])
+  childCategories           Category[]              @relation("CategoryHierarchy")
+
+  // Relations
+  transactions              Transaction[]
+  budgetCategories          BudgetCategory[]
+  recurringTransactions     RecurringTransaction[]
+  categoryRules             CategoryRule[]
+
+  @@map("categories")
+}
+
+// ============================================================================
+// CREDIT CARD SPECIFIC FEATURES
+// ============================================================================
+
+model CreditCardStatement {
+  id                        String                  @id                         @default(uuid())
+  creditCardId              String                  @map("credit_card_id")
+  statementDate             DateTime                @map("statement_date")      @db.Date
+  dueDate                   DateTime                @map("due_date")            @db.Date
+  openingBalance            Decimal                 @map("opening_balance")     @db.Decimal(19, 5)
+  closingBalance            Decimal                 @map("closing_balance")     @db.Decimal(19, 5)
+  minimumPayment            Decimal                 @map("minimum_payment")     @db.Decimal(19, 5)
+  paymentAmount             Decimal?                @map("payment_amount")      @db.Decimal(19, 5)
+  isPaid                    Boolean                 @map("is_paid")             @default(false)  
+  paymentDate               DateTime?               @map("payment_date")
+
+  creditCard                CreditCard              @relation(fields: [creditCardId], references: [id], onDelete: Cascade)
+
+  @@map("credit_card_statements")
+}
+
+model CreditCardOffer {
+  id                        String                  @id                             @default(uuid())
+  creditCardId              String                  @map("credit_card_id")
+  offerName                 String                  @map("offer_name")              @db.VarChar(200)
+  transactionId             String                  @map("transaction_id")
+  originalAmount            Decimal                 @map("original_amount")         @db.Decimal(19, 5)
+  promotionalRate           Decimal                 @map("promotional_rate")        @db.Decimal(5, 4)
+  standardRate              Decimal                 @map("standard_rate")           @db.Decimal(5, 4)
+  startDate                 DateTime                @map("start_date")              @db.Date
+  endDate                   DateTime                @map("end_date")                @db.Date
+  balanceRemaining          Decimal                 @map("balance_remaining")       @db.Decimal(19, 5)
+  totalPaidPromotional      Decimal                 @map("total_paid_promotional")  @default(0)             @db.Decimal(19, 5)
+  totalPaidStandard         Decimal                 @map("total_paid_standard")     @default(0)             @db.Decimal(19, 5)
+
+  creditCard                CreditCard              @relation(fields: [creditCardId], references: [id], onDelete: Cascade)
+  transaction               Transaction             @relation(fields: [transactionId], references: [id])
+
+  @@map("credit_card_offers")
+}
+
+// ============================================================================
+// GOALS & BUDGETING
+// ============================================================================
+
+model Goal {
+  id                        String                  @id                       @default(uuid())
+  userId                    String                  @map("user_id")
+  name                      String                  @db.VarChar(200)
+  description               String?                 @db.Text
+  targetAmount              Decimal                 @map("target_amount")     @db.Decimal(19, 5)
+  currentAmount             Decimal                 @map("current_amount")    @default(0)           @db.Decimal(19, 5)
+  targetDate                DateTime?               @map("target_date")       @db.Date
+  goalType                  GoalType                @map("goal_type")
+  priority                  Int                     @default(1)
+  status                    GoalStatus              @default(ACTIVE)
+  createdAt                 DateTime                @map("created_at")        @default(now()) 
+
+  user                      User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("goals")
+}
+
+model Budget {
+  id                        String                  @id                     @default(uuid())
+  userId                    String                  @map("user_id")
+  name                      String?                 @db.VarChar(100)
+  periodType                BudgetPeriod            @map("period_type")
+  startDate                 DateTime                @map("start_date")      @db.Date
+  totalBudget               Decimal                 @map("total_budget")    @db.Decimal(19, 5)
+  status                    BudgetStatus            @default(ACTIVE)
+
+  user                      User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  budgetCategories          BudgetCategory[]
+
+  @@map("budgets")
+}
+
+model BudgetCategory {
+  id                        String                  @id                         @default(uuid())
+  budgetId                  String                  @map("budget_id")
+  categoryId                String                  @map("category_id")
+  allocatedAmount           Decimal                 @map("allocated_amount")    @db.Decimal(19, 5)
+  spentAmount               Decimal                 @map("spent_amount")        @default(0)           @db.Decimal(19, 5)
+
+  budget                    Budget                  @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  category                  Category                @relation(fields: [categoryId], references: [id])
+
+  @@map("budget_categories")
+}
+
+// ============================================================================
+// AUTOMATION & INTELLIGENCE
+// ============================================================================
+
+model RecurringTransaction {
+  id                        String                    @id                         @default(uuid())
+  userId                    String                    @map("user_id")
+  name                      String                    @db.VarChar(200)
+  amount                    Decimal                   @db.Decimal(19, 5)
+  frequency                 RecurringFrequency        
+  nextDueDate               DateTime                  @map("next_due_date")       @db.Date
+  categoryId                String?                   @map("category_id")
+  isActive                  Boolean                   @map("is_active")           @default(true)
+  confidenceScore           Decimal?                  @map("confidence_score")    @db.Decimal(3, 2) // ML confidence
+
+  user                      User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category                  Category?                 @relation(fields: [categoryId], references: [id])
+
+  @@map("recurring_transactions")
+}
+
+model CategoryRule {
+  id                        String                    @id                                 @default(uuid())
+  userId                    String                    @map("user_id")
+  ruleName                  String                    @map("rule_name")                   @db.VarChar(100)
+  merchantPattern           String?                   @map("merchant_pattern")            @db.VarChar(200) // regex/contains matching
+  descriptionPattern        String?                   @map("description_pattern")         @db.VarChar(200)
+  categoryId                String                    @map("category_id")
+  confidenceThreshold       Decimal                   @map("confidence_threshold")        @db.Decimal(3, 2)
+  isActive                  Boolean                   @map("is_active")                   @default(true)
+
+  user                      User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category                  Category                  @relation(fields: [categoryId], references: [id])
+
+  @@map("category_rules")
+}

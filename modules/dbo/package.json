@@ -5,8 +5,8 @@
   "description": "TypeORM database operations for Life Dash",
   "author": "Bradley Laskey",
   "dependencies": {
+    "@prisma/client": "^6.14.0",
     "mysql2": "^3.14.3",
-    "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.26"
+    "prisma": "^6.14.0"
   }
 }

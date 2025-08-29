@@ -4,6 +4,8 @@ import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+// @ts-ignore
+import nextjs from '@next/eslint-plugin-next';
 
 export default tseslint.config(
   // Global ignores careful not to duplicate
@@ -32,20 +34,20 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
 
-  // Monorepo specific
+
+  // @app/api workspace
   {
-    files: ['**/*.{ts,tsx,js,jsx,mjs,json}'],
+    files: ['apps/api/**/*.{ts,js}'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        projectService: true,
+        projectService: {
+          allowDefaultProject: ['apps/api/*.js'],
+          defaultProject: 'apps/api/tsconfig.json',
+        },
         tsconfigRootDir: import.meta.dirname,
-        ecmaVersion: 'latest',
-        sourceType: 'module',
       },
-      globals: {
-        ...globals.node,
-      },
+      globals: { ...globals.node, Bun: 'readonly' },
     },
     plugins: {
       '@typescript-eslint': tseslint.plugin,
@@ -55,33 +57,87 @@ export default tseslint.config(
     },
   },
 
-  // @app/api & @app/dbo overrides
+  // @app/dbo workspace
   {
-    files: ['apps/api/**/*.{ts,js,json}', 'packages/{dbo,admin-api}/**/*.{ts,js,json}'],
+    files: ['modules/dbo/**/*.{ts,js}'],
     languageOptions: {
-      globals: { ...globals.node, Bun: 'readonly' },
+      parser: tseslint.parser,
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: ['modules/dbo/*.js'],
+          defaultProject: 'modules/dbo/tsconfig.json',
+        },
+        tsconfigRootDir: import.meta.dirname,
+      },
+      globals: { ...globals.node },
+    },
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
     },
   },
 
-  // UI package overrides
+  // @app/bgw workspace
   {
-    files: ['apps/ui/**/*.{ts,tsx,json,html}'],
+    files: ['apps/bgw/**/*.{ts,js}'],
     languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: ['apps/bgw/*.js'],
+          defaultProject: 'apps/bgw/tsconfig.json',
+        },
+        tsconfigRootDir: import.meta.dirname,
+      },
+      globals: { ...globals.node },
+    },
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
+    },
+  },
+
+  // @app/ui workspace (Next.js)
+  {
+    files: ['apps/ui/**/*.{ts,tsx,js,jsx}'],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: ['apps/ui/*.js'],
+          defaultProject: 'apps/ui/tsconfig.json',
+        },
+        tsconfigRootDir: import.meta.dirname,
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
       globals: {
         ...globals.browser,
       },
     },
     plugins: {
+      '@typescript-eslint': tseslint.plugin,
       react: react,
       'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      '@next/next': nextjs,
     },
-    settings: { react: { version: 'detect' } },
+    settings: { 
+      react: { version: 'detect' },
+      next: { rootDir: 'apps/ui' }
+    },
     rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
       ...react.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
-      // HMR saftey
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      ...nextjs.configs.recommended.rules,
+      ...nextjs.configs['core-web-vitals'].rules,
+      // Next.js specific
+      '@next/next/no-html-link-for-pages': ['error', 'apps/ui/src/app'],
     },
   },
 );

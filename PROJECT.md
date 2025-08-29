@@ -19,10 +19,10 @@ Build a fun, low-friction personal finance dashboard that reduces anxiety by aut
 ## Tech Stack
 
 - **Frontend**: React 19, heroui/react + framer-motion, reCharts, d3, Tailwind, Typescript, and Vite
-- **Backend**: ElysiaJS (Bun), TypeScript. Joi for validation. TypeORM (MySQL).
+- **Backend**: ElysiaJS (Bun), TypeScript. Joi for validation. Prisma ORM (MariaDB).
 - **Luxon**: Project wide Date/time manipulation and formatting, all times stored in UTC and converted to local before display.
 - **Tagging & Categorization**: Run a Node worker that auto-tags transactions by merchant (Woolies = groceries, Shell = fuel). Use ML-lite (e.g. TensorFlow.js) if you want to train it to learn your habits.
-- **Infra**: Docker, docker-compose (dev), MySQL (Schema & migrations managed via TypeORM).
+- **Infra**: Docker, docker-compose (dev), MariaDB (Schema & migrations managed via Prisma).
 - **CI/CD**: GitHub Actions → container build → registry → deploy (Google cloud app services, ECS/Fargate or Azure Container Apps).
 - **Obs/Sec**: Pino logs (JSON), OpenTelemetry hooks, JWT auth (Paseto preferred), OWASP headers, rate limiting.
 
@@ -31,9 +31,9 @@ Build a fun, low-friction personal finance dashboard that reduces anxiety by aut
 - **API (Elysia)**: auth, users, accounts, transactions, budgets, goals, projections.
 - **Worker**: background ingestion, categorization, projections, notifications.
 - **Web**: SPA with routes: Dashboard, Transactions, Goals, Budgets, Settings.
-- **DB**: MySQL schemas; Redis for jobs and ephemeral caches (consider in architecture for later integration).
+- **DB**: MariaDB schemas; Redis for jobs and ephemeral caches (consider in architecture for later integration).
 
-## DataBase (MySQL)
+## Database (MariaDB)
 
 - All timestamps should be stored in UTC. If not recorded in UTC, they should be converted to UTC upon ingestion.
 
@@ -126,5 +126,5 @@ Build a fun, low-friction personal finance dashboard that reduces anxiety by aut
   /shared
     # Shared images, files, constants, types, hooks, utils etc.
   /dbo
-    # TypeORM entities and migrations
+    # Prisma entities and migrations
 ```

@@ -4,10 +4,31 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "tsBuildInfoFile": "./dist/.tsbuildinfo",
-    "jsx": "react-jsx",
-    "types": ["vite/client", "bun-types"]
+    "jsx": "preserve",
+    "types": [
+      "vite/client",
+      "bun-types"
+    ],
+    "noEmit": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["src/**/*", "vite.config.ts"],
-  "exclude": ["node_modules", "dist", "public"],
-  "references": [{ "path": "../../modules/shared" }]
+  "include": [
+    "src/**/*",
+    "vite.config.ts",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "public"
+  ],
+  "references": [
+    {
+      "path": "../../modules/shared"
+    }
+  ]
 }

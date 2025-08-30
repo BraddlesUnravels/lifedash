@@ -353,7 +353,7 @@ describe('presentation-time', () => {
 
       expect(Math.abs(dateMillis - stringMillis)).toBeLessThanOrEqual(1);
       expect(Math.abs(stringMillis - millisMillisResult)).toBeLessThanOrEqual(1);
-      
+
       // The rest of the timestamp should be identical
       expect(dateResult.slice(0, -4)).toBe(stringResult.slice(0, -4));
       expect(stringResult.slice(0, -4)).toBe(millisResult.slice(0, -4));

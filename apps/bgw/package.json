@@ -7,8 +7,21 @@
   "engines": {
     "bun": ">=1.2.21"
   },
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "build": "bun build src/index.ts --outdir=dist --target=bun",
+    "test": "vitest --run --passWithNoTests",
+    "lint": "prettier --check src/**/*.ts",
+    "lint:fix": "prettier --write src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@app/shared": "workspace:*",
     "@app/dbo": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
   }
 }

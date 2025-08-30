@@ -1,5 +1,5 @@
-import { Card, CardBody, CardHeader, Progress, Button } from '@heroui/react'
-import MainLayout from '../../components/layout/main-layout'
+import { Card, CardBody, CardHeader, Progress, Button } from '@heroui/react';
+import MainLayout from '../../components/layout/main-layout';
 
 export default function DashboardPage() {
   return (
@@ -150,5 +150,5 @@ export default function DashboardPage() {
         </div>
       </div>
     </MainLayout>
-  )
+  );
 }

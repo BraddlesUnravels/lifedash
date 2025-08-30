@@ -2,9 +2,9 @@
 export * from './clients';
 
 // Re-export Prisma types for convenience
-export type { 
-  User, 
-  UserCredential, 
+export type {
+  User,
+  UserCredential,
   UserSecurity,
   UserEmail,
   UserPhone,
@@ -34,5 +34,5 @@ export type {
   GoalStatus,
   BudgetPeriod,
   BudgetStatus,
-  RecurringFrequency
+  RecurringFrequency,
 } from './generated/prisma';

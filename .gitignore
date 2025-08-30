@@ -6,3 +6,4 @@
 **/*.log
 **/.next
 **/seed-data
+**/generated/prisma

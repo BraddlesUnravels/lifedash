@@ -10,6 +10,12 @@
   ],
   "scripts": {
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "bun run --filter='*' lint",
+    "lint:fix": "bun run --filter='*' lint:fix",
+    "typecheck": "bun run --filter='*' typecheck",
+    "test": "bun run --filter='*' test",
+    "build": "bun run --filter='*' build",
     "prepare": "husky",
     "infra:up": "docker compose up -d",
     "infra:down": "docker compose down",

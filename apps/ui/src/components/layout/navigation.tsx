@@ -1,41 +1,36 @@
-'use client'
+'use client';
 
-import { 
-  Navbar, 
-  NavbarBrand, 
-  NavbarContent, 
-  NavbarItem, 
-  Link, 
-  Button,
+import {
+  Link,
   Switch,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Avatar
-} from '@heroui/react'
-import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
+  Avatar,
+} from '@heroui/react';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 const navItems = [
   { name: 'Dashboard', href: '/' },
   { name: 'Transactions', href: '/transactions' },
   { name: 'Goals', href: '/goals' },
   { name: 'Budgets', href: '/budgets' },
-]
+];
 
 export default function Navigation() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  const pathname = usePathname()
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
-    return null
+    return null;
   }
 
   return (
@@ -72,11 +67,7 @@ export default function Navigation() {
           isSelected={theme === 'dark'}
           onValueChange={(selected) => setTheme(selected ? 'dark' : 'light')}
           thumbIcon={({ isSelected }) =>
-            isSelected ? (
-              <span className="text-xs">🌙</span>
-            ) : (
-              <span className="text-xs">☀️</span>
-            )
+            isSelected ? <span className="text-xs">🌙</span> : <span className="text-xs">☀️</span>
           }
         />
         <Dropdown placement="bottom-end">
@@ -103,5 +94,5 @@ export default function Navigation() {
         </Dropdown>
       </div>
     </nav>
-  )
+  );
 }

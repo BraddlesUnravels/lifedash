@@ -1,39 +1,51 @@
-'use client'
+'use client';
 
-import { 
-  Card, CardBody, CardHeader, Button, Input, Select, SelectItem,
-  Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-  Chip, Pagination
-} from '@heroui/react'
-import MainLayout from '../../components/layout/main-layout'
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Button,
+  Input,
+  Select,
+  SelectItem,
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Chip,
+  Pagination,
+} from '@heroui/react';
+import MainLayout from '../../components/layout/main-layout';
 
 const mockTransactions = [
   {
     id: 1,
     date: '2024-01-15',
     merchant: 'Woolworths',
-    amount: -87.50,
+    amount: -87.5,
     category: 'Groceries',
     account: 'Checking',
-    status: 'cleared'
+    status: 'cleared',
   },
   {
     id: 2,
     date: '2024-01-14',
     merchant: 'Salary Deposit',
-    amount: 3280.00,
+    amount: 3280.0,
     category: 'Income',
     account: 'Checking',
-    status: 'cleared'
+    status: 'cleared',
   },
   {
     id: 3,
     date: '2024-01-13',
     merchant: 'Shell',
-    amount: -65.40,
+    amount: -65.4,
     category: 'Fuel',
     account: 'Checking',
-    status: 'pending'
+    status: 'pending',
   },
   {
     id: 4,
@@ -42,20 +54,29 @@ const mockTransactions = [
     amount: -17.99,
     category: 'Entertainment',
     account: 'Credit Card',
-    status: 'cleared'
+    status: 'cleared',
   },
   {
     id: 5,
     date: '2024-01-11',
     merchant: 'Coffee Club',
-    amount: -8.50,
+    amount: -8.5,
     category: 'Dining',
     account: 'Checking',
-    status: 'cleared'
-  }
-]
+    status: 'cleared',
+  },
+];
 
-const categories = ['All', 'Income', 'Groceries', 'Fuel', 'Entertainment', 'Dining', 'Utilities', 'Other']
+const categories = [
+  'All',
+  'Income',
+  'Groceries',
+  'Fuel',
+  'Entertainment',
+  'Dining',
+  'Utilities',
+  'Other',
+];
 
 export default function TransactionsPage() {
   return (
@@ -64,15 +85,15 @@ export default function TransactionsPage() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Transactions</h1>
-            <p className="text-default-600 mt-1">Manage and categorize your financial transactions</p>
+            <p className="text-default-600 mt-1">
+              Manage and categorize your financial transactions
+            </p>
           </div>
           <div className="flex gap-3">
             <Button color="secondary" variant="bordered">
               Export CSV
             </Button>
-            <Button color="primary">
-              Import CSV
-            </Button>
+            <Button color="primary">Import CSV</Button>
           </div>
         </div>
 
@@ -87,26 +108,16 @@ export default function TransactionsPage() {
               />
               <Select placeholder="Category" className="min-w-48" selectionMode="single">
                 {categories.map((category) => (
-                  <SelectItem key={category.toLowerCase()} value={category.toLowerCase()}>
-                    {category}
-                  </SelectItem>
+                  <SelectItem key={category.toLowerCase()}>{category}</SelectItem>
                 ))}
               </Select>
               <Select placeholder="Account" className="min-w-48" selectionMode="single">
-                <SelectItem key="checking" value="checking">Checking</SelectItem>
-                <SelectItem key="savings" value="savings">Savings</SelectItem>
-                <SelectItem key="credit" value="credit">Credit Card</SelectItem>
+                <SelectItem key="checking">Checking</SelectItem>
+                <SelectItem key="savings">Savings</SelectItem>
+                <SelectItem key="credit">Credit Card</SelectItem>
               </Select>
-              <Input
-                type="date"
-                label="From Date"
-                className="min-w-48"
-              />
-              <Input
-                type="date"
-                label="To Date"
-                className="min-w-48"
-              />
+              <Input type="date" label="From Date" className="min-w-48" />
+              <Input type="date" label="To Date" className="min-w-48" />
             </div>
           </CardBody>
         </Card>
@@ -171,13 +182,20 @@ export default function TransactionsPage() {
                     <TableCell>{transaction.date}</TableCell>
                     <TableCell className="font-medium">{transaction.merchant}</TableCell>
                     <TableCell>
-                      <span className={transaction.amount > 0 ? 'text-success font-semibold' : 'text-danger font-semibold'}>
-                        {transaction.amount > 0 ? '+' : ''}${Math.abs(transaction.amount).toFixed(2)}
+                      <span
+                        className={
+                          transaction.amount > 0
+                            ? 'text-success font-semibold'
+                            : 'text-danger font-semibold'
+                        }
+                      >
+                        {transaction.amount > 0 ? '+' : ''}$
+                        {Math.abs(transaction.amount).toFixed(2)}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <Chip 
-                        size="sm" 
+                      <Chip
+                        size="sm"
                         color={transaction.category === 'Income' ? 'success' : 'default'}
                         variant="flat"
                       >
@@ -186,8 +204,8 @@ export default function TransactionsPage() {
                     </TableCell>
                     <TableCell>{transaction.account}</TableCell>
                     <TableCell>
-                      <Chip 
-                        size="sm" 
+                      <Chip
+                        size="sm"
                         color={transaction.status === 'cleared' ? 'success' : 'warning'}
                         variant="dot"
                       >
@@ -203,7 +221,7 @@ export default function TransactionsPage() {
                 ))}
               </TableBody>
             </Table>
-            
+
             <div className="flex justify-center mt-4">
               <Pagination total={10} initialPage={1} />
             </div>
@@ -211,5 +229,5 @@ export default function TransactionsPage() {
         </Card>
       </div>
     </MainLayout>
-  )
+  );
 }

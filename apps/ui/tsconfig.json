@@ -1,31 +1,27 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "./src",
     "outDir": "./dist",
     "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "jsx": "preserve",
-    "types": [
-      "vite/client",
-      "bun-types"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "verbatimModuleSyntax": false,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
     "noEmit": true,
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@app/shared/*": ["../../modules/shared/src/*"]
+    }
   },
-  "include": [
-    "src/**/*",
-    "vite.config.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "public"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "dist", "public"],
   "references": [
     {
       "path": "../../modules/shared"

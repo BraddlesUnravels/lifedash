@@ -5,12 +5,16 @@
   "description": "Shared assets/resources for Life Dash",
   "author": "Bradley Laskey",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "prettier --check src/**/*.ts",
+    "lint:fix": "prettier --write src/**/*.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "luxon": "^3.7.1"
   },
   "devDependencies": {
+    "jsdom": "^26.1.0",
     "vitest": "^3.2.4"
   }
 }

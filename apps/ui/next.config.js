@@ -10,6 +10,6 @@ const nextConfig = {
   // Configure for monorepo
   transpilePackages: ['@app/shared'],
   outputFileTracingRoot: require('path').join(__dirname, '../../'),
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

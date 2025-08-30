@@ -8,23 +8,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22 }
-      - run: npm ci
-      - run: npm run lint
+      - uses: oven-sh/setup-bun@v1
+        with: { bun-version: latest }
+      - run: bun install
+      - run: bun run gen:db
+      - run: bun run lint
   typecheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22 }
-      - run: npm ci
-      - run: npm run typecheck
+      - uses: oven-sh/setup-bun@v1
+        with: { bun-version: latest }
+      - run: bun install
+      - run: bun run gen:db
+      - run: bun run typecheck
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22 }
-      - run: npm ci
-      - run: npm test -- --ci
+      - uses: oven-sh/setup-bun@v1
+        with: { bun-version: latest }
+      - run: bun install
+      - run: bun run gen:db
+      - run: bun run test

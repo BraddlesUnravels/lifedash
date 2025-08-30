@@ -2,11 +2,26 @@
   "name": "@app/dbo",
   "version": "0.0.1",
   "private": true,
-  "description": "TypeORM database operations for Life Dash",
+  "description": "Prisma database operations for Life Dash",
   "author": "Bradley Laskey",
+  "scripts": {
+    "generate": "prisma generate --schema=prisma/schema.prisma",
+    "db:push": "prisma db push --schema=prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=prisma/schema.prisma",
+    "db:reset": "prisma migrate reset --schema=prisma/schema.prisma",
+    "db:seed": "bun src/init/seed.ts",
+    "studio": "prisma studio --schema=prisma/schema.prisma",
+    "lint": "prettier --check src/**/*.ts",
+    "lint:fix": "prettier --write src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
+    "@app/shared": "workspace:*",
     "@prisma/client": "^6.14.0",
     "mysql2": "^3.14.3",
     "prisma": "^6.14.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
   }
 }

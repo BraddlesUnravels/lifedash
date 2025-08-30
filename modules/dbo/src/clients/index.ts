@@ -9,11 +9,7 @@ export const connectAllClients = async (): Promise<void> => {
   const { connectBgw } = await import('./bgw-client');
   const { connectMig } = await import('./mig-client');
 
-  await Promise.all([
-    connectApp(),
-    connectBgw(),
-    connectMig()
-  ]);
+  await Promise.all([connectApp(), connectBgw(), connectMig()]);
 };
 
 export const disconnectAllClients = async (): Promise<void> => {
@@ -21,11 +17,7 @@ export const disconnectAllClients = async (): Promise<void> => {
   const { disconnectBgw } = await import('./bgw-client');
   const { disconnectMig } = await import('./mig-client');
 
-  await Promise.all([
-    disconnectApp(),
-    disconnectBgw(),
-    disconnectMig()
-  ]);
+  await Promise.all([disconnectApp(), disconnectBgw(), disconnectMig()]);
 };
 
 // Graceful shutdown handler

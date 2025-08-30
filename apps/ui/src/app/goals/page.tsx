@@ -1,11 +1,23 @@
-'use client'
+'use client';
 
-import { 
-  Card, CardBody, CardHeader, Button, Progress, 
-  Modal, ModalContent, ModalHeader, ModalBody, ModalFooter,
-  useDisclosure, Input, Select, SelectItem, Textarea
-} from '@heroui/react'
-import MainLayout from '../../components/layout/main-layout'
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Button,
+  Progress,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  Input,
+  Select,
+  SelectItem,
+  Textarea,
+} from '@heroui/react';
+import MainLayout from '../../components/layout/main-layout';
 
 const mockGoals = [
   {
@@ -17,7 +29,7 @@ const mockGoals = [
     type: 'Savings',
     priority: 'High',
     status: 'On Track',
-    monthlyContribution: 500
+    monthlyContribution: 500,
   },
   {
     id: 2,
@@ -28,7 +40,7 @@ const mockGoals = [
     type: 'Savings',
     priority: 'High',
     status: 'Behind',
-    monthlyContribution: 1200
+    monthlyContribution: 1200,
   },
   {
     id: 3,
@@ -39,7 +51,7 @@ const mockGoals = [
     type: 'Short-term',
     priority: 'Medium',
     status: 'On Track',
-    monthlyContribution: 250
+    monthlyContribution: 250,
   },
   {
     id: 4,
@@ -50,32 +62,23 @@ const mockGoals = [
     type: 'Debt',
     priority: 'High',
     status: 'Ahead',
-    monthlyContribution: 800
-  }
-]
+    monthlyContribution: 800,
+  },
+];
 
-const goalTypes = ['Savings', 'Debt', 'Investment', 'Short-term']
-const priorities = ['Low', 'Medium', 'High', 'Critical']
+const goalTypes = ['Savings', 'Debt', 'Investment', 'Short-term'];
+const priorities = ['Low', 'Medium', 'High', 'Critical'];
 
 export default function GoalsPage() {
-  const {isOpen, onOpen, onOpenChange} = useDisclosure()
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const getProgressColor = (current: number, target: number) => {
-    const percentage = (current / target) * 100
-    if (percentage >= 90) return 'success'
-    if (percentage >= 60) return 'primary'
-    if (percentage >= 30) return 'warning'
-    return 'danger'
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'On Track': return 'success'
-      case 'Ahead': return 'primary'
-      case 'Behind': return 'danger'
-      default: return 'default'
-    }
-  }
+    const percentage = (current / target) * 100;
+    if (percentage >= 90) return 'success';
+    if (percentage >= 60) return 'primary';
+    if (percentage >= 30) return 'warning';
+    return 'danger';
+  };
 
   return (
     <MainLayout>
@@ -130,11 +133,15 @@ export default function GoalsPage() {
                       <span className="text-xs bg-default-100 px-2 py-1 rounded-full">
                         {goal.type}
                       </span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        goal.priority === 'High' ? 'bg-danger-100 text-danger' :
-                        goal.priority === 'Medium' ? 'bg-warning-100 text-warning' :
-                        'bg-default-100'
-                      }`}>
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          goal.priority === 'High'
+                            ? 'bg-danger-100 text-danger'
+                            : goal.priority === 'Medium'
+                              ? 'bg-warning-100 text-warning'
+                              : 'bg-default-100'
+                        }`}
+                      >
                         {goal.priority} Priority
                       </span>
                     </div>
@@ -152,8 +159,8 @@ export default function GoalsPage() {
                       ${goal.currentAmount.toLocaleString()} / ${goal.targetAmount.toLocaleString()}
                     </span>
                   </div>
-                  <Progress 
-                    value={(goal.currentAmount / goal.targetAmount) * 100} 
+                  <Progress
+                    value={(goal.currentAmount / goal.targetAmount) * 100}
                     color={getProgressColor(goal.currentAmount, goal.targetAmount)}
                     className="max-w-full"
                   />
@@ -162,15 +169,21 @@ export default function GoalsPage() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <div className="text-default-600">Deadline</div>
-                    <div className="font-medium">{new Date(goal.deadline).toLocaleDateString()}</div>
+                    <div className="font-medium">
+                      {new Date(goal.deadline).toLocaleDateString()}
+                    </div>
                   </div>
                   <div>
                     <div className="text-default-600">Status</div>
-                    <div className={`font-medium ${
-                      goal.status === 'On Track' ? 'text-success' :
-                      goal.status === 'Ahead' ? 'text-primary' :
-                      'text-danger'
-                    }`}>
+                    <div
+                      className={`font-medium ${
+                        goal.status === 'On Track'
+                          ? 'text-success'
+                          : goal.status === 'Ahead'
+                            ? 'text-primary'
+                            : 'text-danger'
+                      }`}
+                    >
                       {goal.status}
                     </div>
                   </div>
@@ -180,7 +193,9 @@ export default function GoalsPage() {
                   </div>
                   <div>
                     <div className="text-default-600">Remaining</div>
-                    <div className="font-medium">${(goal.targetAmount - goal.currentAmount).toLocaleString()}</div>
+                    <div className="font-medium">
+                      ${(goal.targetAmount - goal.currentAmount).toLocaleString()}
+                    </div>
                   </div>
                 </div>
 
@@ -233,18 +248,15 @@ export default function GoalsPage() {
                       placeholder="10000"
                       startContent="$"
                     />
-                    <Input
-                      type="date"
-                      label="Target Date"
-                    />
+                    <Input type="date" label="Target Date" />
                     <Select label="Goal Type" placeholder="Select type" selectionMode="single">
                       {goalTypes.map((type) => (
-                        <SelectItem key={type.toLowerCase()} value={type.toLowerCase()}>{type}</SelectItem>
+                        <SelectItem key={type.toLowerCase()}>{type}</SelectItem>
                       ))}
                     </Select>
                     <Select label="Priority" placeholder="Select priority" selectionMode="single">
                       {priorities.map((priority) => (
-                        <SelectItem key={priority.toLowerCase()} value={priority.toLowerCase()}>{priority}</SelectItem>
+                        <SelectItem key={priority.toLowerCase()}>{priority}</SelectItem>
                       ))}
                     </Select>
                     <Input
@@ -253,12 +265,7 @@ export default function GoalsPage() {
                       placeholder="500"
                       startContent="$"
                     />
-                    <Input
-                      type="number"
-                      label="Current Amount"
-                      placeholder="0"
-                      startContent="$"
-                    />
+                    <Input type="number" label="Current Amount" placeholder="0" startContent="$" />
                     <Textarea
                       label="Description"
                       placeholder="Describe your goal and why it's important..."
@@ -280,5 +287,5 @@ export default function GoalsPage() {
         </Modal>
       </div>
     </MainLayout>
-  )
+  );
 }

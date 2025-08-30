@@ -5,8 +5,8 @@ import { PrismaClient } from '../generated/prisma';
 export const bgwPrisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.BGW_DATABASE_URL || process.env.DATABASE_URL
-    }
+      url: process.env.BGW_DATABASE_URL || process.env.DATABASE_URL,
+    },
   },
   log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
   errorFormat: 'pretty',

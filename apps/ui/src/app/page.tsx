@@ -1,5 +1,5 @@
-import { Card, CardBody, Button } from '@heroui/react'
-import MainLayout from '../components/layout/main-layout'
+import { Card, CardBody, Button } from '@heroui/react';
+import MainLayout from '../components/layout/main-layout';
 
 export default function HomePage() {
   return (
@@ -10,7 +10,8 @@ export default function HomePage() {
             Welcome to Life's Next
           </h1>
           <p className="text-xl text-default-600 max-w-2xl mx-auto">
-            Reduce friction in financial tracking with automated data ingestion and goal visualization
+            Reduce friction in financial tracking with automated data ingestion and goal
+            visualization
           </p>
         </div>
 
@@ -45,9 +46,7 @@ export default function HomePage() {
             <CardBody className="text-center space-y-4">
               <div className="text-3xl">💰</div>
               <h3 className="text-xl font-semibold">Transactions</h3>
-              <p className="text-default-600">
-                Import and categorize your financial transactions
-              </p>
+              <p className="text-default-600">Import and categorize your financial transactions</p>
               <Button color="success" variant="flat" size="sm">
                 Import Data
               </Button>
@@ -59,8 +58,8 @@ export default function HomePage() {
           <CardBody className="text-center space-y-4">
             <h2 className="text-2xl font-semibold">Get Started</h2>
             <p className="text-default-600 max-w-xl mx-auto">
-              Begin by importing your financial data or setting up your first goal. 
-              Our automated categorization will help organize your transactions.
+              Begin by importing your financial data or setting up your first goal. Our automated
+              categorization will help organize your transactions.
             </p>
             <div className="flex gap-4 justify-center">
               <Button color="primary" size="lg">
@@ -74,5 +73,5 @@ export default function HomePage() {
         </Card>
       </div>
     </MainLayout>
-  )
+  );
 }

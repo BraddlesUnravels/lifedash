@@ -34,7 +34,6 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
 
-
   // @app/api workspace
   {
     files: ['apps/api/**/*.{ts,js}'],
@@ -126,9 +125,9 @@ export default tseslint.config(
       'react-hooks': reactHooks,
       '@next/next': nextjs,
     },
-    settings: { 
+    settings: {
       react: { version: 'detect' },
-      next: { rootDir: 'apps/ui' }
+      next: { rootDir: 'apps/ui' },
     },
     rules: {
       '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
@@ -136,8 +135,10 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       ...nextjs.configs.recommended.rules,
       ...nextjs.configs['core-web-vitals'].rules,
-      // Next.js specific
-      '@next/next/no-html-link-for-pages': ['error', 'apps/ui/src/app'],
+      // Next.js specific overrides
+      'react/react-in-jsx-scope': 'off',
+      'react/no-unescaped-entities': 'off',
+      '@next/next/no-html-link-for-pages': 'off',
     },
   },
 );

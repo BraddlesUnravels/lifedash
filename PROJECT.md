@@ -22,6 +22,7 @@ Build a fun, low-friction personal finance dashboard that reduces anxiety by aut
 - **Backend**: ElysiaJS (Bun), TypeScript. Joi for validation. Prisma ORM (MariaDB).
 - **Luxon**: Project wide Date/time manipulation and formatting, all times stored in UTC and converted to local before display.
 - **Tagging & Categorization**: Run a Node worker that auto-tags transactions by merchant (Woolies = groceries, Shell = fuel). Use ML-lite (e.g. TensorFlow.js) if you want to train it to learn your habits.
+- **AI Integration**: MCP (Model Context Protocol) servers for prototyping with AI models. Find and experiment with AI models for free to enhance financial insights and automation.
 - **Infra**: Docker, docker-compose (dev), MariaDB (Schema & migrations managed via Prisma).
 - **CI/CD**: GitHub Actions → container build → registry → deploy (Google cloud app services, ECS/Fargate or Azure Container Apps).
 - **Obs/Sec**: Pino logs (JSON), OpenTelemetry hooks, JWT auth (Paseto preferred), OWASP headers, rate limiting.
